@@ -114,3 +114,12 @@ class Command(BaseCommand):
                     start = datetime.datetime.combine(day, start), 
                     end = datetime.datetime.combine(day, end)
                 )
+        
+        
+        s1 = Slot.objects.get(id = f"{rooms[1].id}-1")
+        s2 = Slot.objects.get(id = f"{rooms[2].id}-2")
+        s3 = Slot.objects.get(id = f"{rooms[4].id}-3")
+        
+        Booking.objects.create(room = s1.room, slot = s1, userLogin = "240107001", status = Booking.CONFIRMED)
+        Booking.objects.create(room = s2.room, slot = s2, userLogin = "240107002", status = Booking.PENDING)
+        Booking.objects.create(room = s3.room, slot = s3, userLogin = "240107003", status = Booking.PENDING)

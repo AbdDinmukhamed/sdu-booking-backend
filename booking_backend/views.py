@@ -20,7 +20,7 @@ def roomDetail(request, room_id):
     return JsonResponse(room.toJSON())
     
 def roomSlots(request, room_id):
-    if Room.objects.filter(id = room_id, bookable=True).exists() != True:
+    if Room.objects.filter(id = room_id, bookable = True).exists() != True:
         return JsonResponse({"error": "Room not found"}, status = 404)
     
     slots = Slot.objects.filter(room_id = room_id)
@@ -30,3 +30,14 @@ def roomSlots(request, room_id):
         response.append(s.toJSON())
     
     return JsonResponse(response, safe = False)
+
+
+def bookings(request):
+    if request.method == "GET":
+        qs = Booking.objects.select_related("room", "slot")
+        
+        response = []
+        for booking in qs:
+            response.append(booking.toJSON())
+            
+        return JsonResponse(response, safe = False)

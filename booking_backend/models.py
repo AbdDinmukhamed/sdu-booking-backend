@@ -54,5 +54,15 @@ class Booking(models.Model):
     slot = models.ForeignKey(Slot, on_delete = models.CASCADE, related_name = "bookings")
     status = models.CharField(max_length = 10, choices = STATUSES, default = PENDING)
     
-    user_login = models.CharField(max_length = 64)
+    userLogin = models.CharField(max_length = 64)
+    
+    def toJSON(self):
+        return {
+            "id": self.id,
+            "roomId": self.room.id,
+            "roomName": self.room.name,
+            "start": self.slot.start.strftime("%Y-%m-%dT%H:%M"),
+            "end": self.slot.end.strftime("%Y-%m-%dT%H:%M"),
+            "status": self.status,
+        }
     
