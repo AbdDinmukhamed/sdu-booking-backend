@@ -1,3 +1,4 @@
+import datetime
 from django.core.management.base import BaseCommand
 
 from booking_backend.models import Booking, Room, Slot
@@ -12,6 +13,8 @@ exampleRooms = [
     {"name": "G108", "building": "Main Building", "floor": 1, "capacity": 24, "equipment": ["Computers", "Projector", "Whiteboard"], "description": "Computer classroom?", "bookable": True},
 ]
 
+exampleTime = [(datetime.time(9, 30), datetime.time(10, 20)), (datetime.time(10, 30), datetime.time(11, 20)), (datetime.time(11, 30), datetime.time(12, 20)), (datetime.time(12, 30), datetime.time(13, 20))]
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         for model in (Booking, Slot, Room):
@@ -22,3 +25,10 @@ class Command(BaseCommand):
         for room in exampleRooms:
             rooms.append(Room.objects.create(name = room["name"], building = room["building"], floor = room["floor"], capacity = room["capacity"], equipment = room["equipment"], description = room["description"], bookable = room["bookable"]))
         
+        day = datetime.date.today()
+
+        for room in rooms:
+            n = 0
+            for start, end in exampleTime:
+                n += 1
+                Slot.objects.create(id = f"{room.id}-{n}", room = room, start = datetime.datetime.combine(day, start), end = datetime.datetime.combine(day, end))

@@ -18,3 +18,15 @@ def roomDetail(request, room_id):
         return JsonResponse({"error": "Room not found"}, status = 404)
     
     return JsonResponse(room.toJSON())
+    
+def roomSlots(request, room_id):
+    if Room.objects.filter(id = room_id, bookable=True).exists() != True:
+        return JsonResponse({"error": "Room not found"}, status = 404)
+    
+    slots = Slot.objects.filter(room_id = room_id)
+    
+    response = []
+    for s in slots:
+        response.append(s.toJSON())
+    
+    return JsonResponse(response, safe = False)

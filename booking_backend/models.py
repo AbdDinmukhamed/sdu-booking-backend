@@ -33,7 +33,17 @@ class Slot(models.Model):
     
     def __str__(self):
         return f"{self.room.name} {self.start}"
-
+        
+    def available(self):
+        return self.room.bookable
+    
+    def toJSON(self):
+        return {
+            "id": self.id,
+            "start": self.start.strftime("%Y-%m-%dT%H:%M"),
+            "end": self.end.strftime("%Y-%m-%dT%H:%M"),
+            "available": self.available(),
+        }
 
 
 class Booking(models.Model):
