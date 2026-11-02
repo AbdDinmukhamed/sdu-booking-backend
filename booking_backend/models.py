@@ -11,6 +11,17 @@ class Room(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def toJSON(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "building": self.building,
+            "floor": self.floor,
+            "capacity": self.capacity,
+            "equipment": self.equipment,
+            "description": self.description,
+        }
 
 
 

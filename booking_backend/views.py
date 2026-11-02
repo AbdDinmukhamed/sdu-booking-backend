@@ -1,5 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import JsonResponse
 
-def index(request):
-    return HttpResponse("Test.")
+from .models import Booking, Room, Slot
+    
+def rooms(request):
+    bookableRooms = Room.objects.filter(bookable=True)
+    data = []
+    
+    for room in bookableRooms:
+        data.append(room.toJSON())
+        
+    return JsonResponse(data)
