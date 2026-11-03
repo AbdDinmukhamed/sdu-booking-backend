@@ -53,7 +53,7 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete = models.CASCADE, related_name = "bookings")
     slot = models.ForeignKey(Slot, on_delete = models.CASCADE, related_name = "bookings")
     status = models.CharField(max_length = 10, choices = STATUSES, default = PENDING)
-    
+    requestReason = models.CharField(max_length = 500, blank = True, default = "")
     userLogin = models.CharField(max_length = 64)
     
     def toJSON(self):
@@ -63,6 +63,7 @@ class Booking(models.Model):
             "roomName": self.room.name,
             "start": self.slot.start.strftime("%Y-%m-%dT%H:%M"),
             "end": self.slot.end.strftime("%Y-%m-%dT%H:%M"),
+            #"requestReason" : self.requestReason,
             "status": self.status,
         }
     
