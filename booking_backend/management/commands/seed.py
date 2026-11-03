@@ -31,7 +31,7 @@ exampleRooms = [
     "capacity": 30, 
     "equipment": ["Projector", "Whiteboard"],  
     "description": "Small far away room", 
-    "bookable": False
+    "bookable": True
     },
     
     {
@@ -51,7 +51,7 @@ exampleRooms = [
     "capacity": 120, 
     "equipment": ["Projector", "Whiteboard", "Air conditioning"], 
     "description": "Large lecture bochka.", 
-    "bookable": False
+    "bookable": True
     },
     
     {
