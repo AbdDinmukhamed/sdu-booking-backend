@@ -120,6 +120,6 @@ class Command(BaseCommand):
         s2 = Slot.objects.get(id = f"{rooms[2].id}-2")
         s3 = Slot.objects.get(id = f"{rooms[4].id}-3")
         
-        Booking.objects.create(room = s1.room, slot = s1, userLogin = "240107001", status = Booking.CONFIRMED)
-        Booking.objects.create(room = s2.room, slot = s2, userLogin = "240107002", status = Booking.PENDING)
-        Booking.objects.create(room = s3.room, slot = s3, userLogin = "240107003", status = Booking.PENDING)
+        Booking.objects.create(room = s1.room, slot = s1, userLogin = "240107001", status = Booking.CONFIRMED, requestReason = "we want to celebrate birthday of our friend, there will be 12 of us there")
+        Booking.objects.create(room = s2.room, slot = s2, userLogin = "240107002", status = Booking.PENDING,requestReason = "we need to discuss future plans of our team project in person on site")
+        Booking.objects.create(room = s3.room, slot = s3, userLogin = "240107003", status = Booking.PENDING, requestReason = "all the lecture halls are full, please help us we need to study")
