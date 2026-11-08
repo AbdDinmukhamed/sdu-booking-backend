@@ -38,7 +38,7 @@ class BookingApiTests(TestCase):
         
         
 
-    #failure? i guess? i don't know what is invalid case
+    #failure unkown room
     def testUnknownRoomReturns404(self):
         print("\n\n\n")
         print("Test 2:\n")

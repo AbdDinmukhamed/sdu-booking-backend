@@ -9,28 +9,13 @@ from .sdu_api import *
 #2: role is not correct
 def login(request):
     if request.method == "POST":
-        result = 0
         username = request.POST.get("login")
         password = request.POST.get("password")
         role = request.POST.get("role")
-        hasAccount = 0
-        account = 0
-        while account < len(TEST_USERS):
-            if TEST_USERS[account]["login"] == username and TEST_USERS[account]["password"] == password:
-                hasAccount = 1
-                break
-            account += 1
-        if hasAccount == 0:
-            result = 1
-        elif TEST_USERS[account]["role"] != role:
-            result = 2
-        response = Login.objects.create(result = result, login = username, role = role, name = "ERROR" if result == 1 else TEST_USERS[account]["name"])
-        
-            
+        result = TEST_API().RequestPassword((username,password,role)) #this abominocity must be fixed later, TODO: remove magic numbers and mayyyybe use ENUMs here
+        response = Login.objects.create(result = result[0], login = username, role = role, name = result[1])
         return JsonResponse(response.toJSON())
     return JsonResponse({"error": "incorrect method, login awaits POST request"}, status = 404)
-
-
 
 def rooms(request):
     bookableRooms = Room.objects.filter(bookable = True)
