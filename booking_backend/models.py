@@ -1,5 +1,19 @@
 from django.db import models
 
+class Login(models.Model):
+    login = models.CharField(max_length = 9)
+    result = models.IntegerField()
+    role = models.CharField(max_length = 20)
+    name = models.CharField(max_length = 64)
+    
+    def toJSON(self):
+        return {
+            "result": self.result,
+            "login": self.login,
+            "role": self.role,
+            "name": self.name,
+        }
+
 class Room(models.Model):
     name = models.CharField(max_length = 16)
     building = models.CharField(max_length = 64)
