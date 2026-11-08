@@ -22,9 +22,9 @@ def login(request):
             account += 1
         if hasAccount == 0:
             result = 1
-        if TEST_USERS[account]["role"] != role:
+        elif TEST_USERS[account]["role"] != role:
             result = 2
-        response = Login.objects.create(result = result, login = username, role = role, name = TEST_USERS[account]["name"])
+        response = Login.objects.create(result = result, login = username, role = role, name = "ERROR" if result == 1 else TEST_USERS[account]["name"])
         
             
         return JsonResponse(response.toJSON())
