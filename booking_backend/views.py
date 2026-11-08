@@ -1,7 +1,10 @@
 from django.http import JsonResponse
 
 from .models import Booking, Room, Slot
-    
+
+def login(request):
+    pass
+
 def rooms(request):
     bookableRooms = Room.objects.filter(bookable = True)
     data = []
