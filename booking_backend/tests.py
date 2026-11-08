@@ -62,11 +62,19 @@ class BookingApiTests(TestCase):
         print("Name is equal to what is expected for given POST request")
     
     #failure for login (username or password)
-    def testUnkownUser(self):
+    def testLoginFailureUsername(self):
         print("\n\n\n")
         print("Test 4:\n")
         response = self.client.post("/api/login", {"login": "240161002", "password": "student123","role": "student"})
         data = response.json()
         self.assertEqual(data["result"], 1)
         print("Result for incorrect username gives 1 meaning it is correctly returning wrong password or username error code")
-        
+    
+    #failure for login (role)
+    def testLoginFailureRole(self):
+        print("\n\n\n")
+        print("Test 5:\n")
+        response = self.client.post("/api/login", {"login": "240107002", "password": "student123","role": "staff"})
+        data = response.json()
+        self.assertEqual(data["result"], 2)
+        print("Result for incorrect role gives 2 meaning it is correctly returning wrong role error code")
