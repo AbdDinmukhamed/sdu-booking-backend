@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Booking, Room, Slot, Login
 from .sdu_api import *
@@ -7,6 +8,7 @@ from .sdu_api import *
 #0: login and password is found, role is correct
 #1: login or password is not correct
 #2: role is not correct
+@csrf_exempt
 def login(request):
     if request.method == "POST":
         username = request.POST.get("login")
