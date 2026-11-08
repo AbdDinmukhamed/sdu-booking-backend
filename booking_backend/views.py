@@ -1,9 +1,33 @@
 from django.http import JsonResponse
 
-from .models import Booking, Room, Slot
+from .models import Booking, Room, Slot, Login
+import .sdu_api
 
+#results: integer returning status of SDU response
+#0: login and password is found, role is correct
+#1: login or password is not correct
+#2: role is not correct
 def login(request):
-    pass
+    if request.method == "POST":
+        result = 0
+        username = request.POST.get("login")
+        password = request.POST.get("password")
+        role = request.POST.get("role")
+        hasAccount = 0
+        account = 0
+        while account < len(TEST_USERS):
+            if TEST_USERS[account]["login"] == username and TEST_USERS[account]["password"] == password:
+                hasAccount = 1
+                break
+            account += 1
+        if hasAccount == 0:
+            result = 1
+        if TEST_USERS[account]["role"] != role:
+            result = 2
+        response = Login.objects.create(result = result, login = username, role = role, name = TEST_USERS[account]["name"])
+        
+            
+        return JsonResponse(response.toJSON())
 
 def rooms(request):
     bookableRooms = Room.objects.filter(bookable = True)
