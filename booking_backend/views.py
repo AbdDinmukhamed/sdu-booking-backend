@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 
 from .models import Booking, Room, Slot, Login
-import .sdu_api
+from .sdu_api import *
 
 #results: integer returning status of SDU response
 #0: login and password is found, role is correct
@@ -28,6 +28,9 @@ def login(request):
         
             
         return JsonResponse(response.toJSON())
+    return JsonResponse({"error": "incorrect method, login awaits POST request"}, status = 404)
+
+
 
 def rooms(request):
     bookableRooms = Room.objects.filter(bookable = True)
