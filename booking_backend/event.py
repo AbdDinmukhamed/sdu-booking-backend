@@ -46,6 +46,7 @@ class EventBus(EventBus):
         if event_type in self.subscribers:
             for subscriber in self.subscribers[event_type]:
                 subscriber.handle_event(event_type, data)
+            return True
 
 class BookingService(Publisher):
     def create(self,request):
@@ -55,9 +56,10 @@ class StaffService(Consumer):
     def __init__(self):
         self.proccessedEvents = []
     def handle_event(self,event_type,data = None):
-        if data in self.proccessedEvents:
+        if data[0] in self.proccessedEvents:
+            print("CONSUMER: Event was already published, aborting")
             return
-        auditRepository = Booking(room = Slot.objects.get(id = f"{data}-1").room, slot = Slot.objects.get(id = f"{data}-1"), userLogin = "test", status = Booking.PENDING)
+        auditRepository = Booking(id = data[1], room = Slot.objects.get(id = f"{data[1]}-1").room, slot = Slot.objects.get(id = f"{data[1]}-1"), userLogin = "test", status = Booking.PENDING)
         auditRepository.save()
-        self.proccessedEvents.append(data)
+        self.proccessedEvents.append(data[0])
         

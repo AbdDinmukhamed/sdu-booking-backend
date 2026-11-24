@@ -1,14 +1,15 @@
 from django.test import TestCase
 from .models import Booking, Room, Slot, Login
-
-
+from .event import *
+import datetime
 class BookingApiTests(TestCase):
 
     def setUp(self):
         self.room = Room.objects.create(name = "J102", building = "Main Building", floor = 1, capacity = 143, equipment = ["Projector"], description = "Standard classroom.", bookable = True)
-
-
         
+        self.myEventBus = EventBus()
+        self.myBookingService = BookingService()
+        self.myStaffService = StaffService()
     #success
     def testRoomsListReturnsBookableRoom(self):
         response = self.client.get("/api/rooms")
@@ -78,3 +79,42 @@ class BookingApiTests(TestCase):
         data = response.json()
         self.assertEqual(data["result"], 2)
         print("Result for incorrect role gives 2 meaning it is correctly returning wrong role error code")
+
+    def testEventSuccess(self):
+        self.rooms = []
+        self.rooms.append(Room.objects.create(name = "G304", building = "Main Building", floor = 3, capacity = 100, equipment = ["Projector", "Whiteboard"], description = "Large classroom.", bookable = True))
+        self.slots = []
+        self.slots.append(Slot.objects.create(id = f"{self.rooms[0].id}-1", room = self.rooms[0],start = datetime.datetime.combine(datetime.date.today(), datetime.time(9, 30)), end = datetime.datetime.combine(datetime.date.today(), datetime.time(10, 20))))
+
+        print("\n\n\n")
+        print("Test Studio Task 9 (succesfull reaction):\n")
+        self.booking = self.myBookingService.create(Room.objects.get(name="G304"))
+        self.myEventBus.add("BookingCreated",self.myStaffService)
+        result = self.myEventBus.publish(self.booking.type,self.booking.getData())
+        self.assertEqual(result, True) #2. event is published
+        print("Event is published")
+        assert Booking.objects.get(slot = Slot.objects.get(id = f"{Room.objects.get(name="G304").id}-1"))
+        print("the main operation succeeds and the consumer performs its expected effect.")
+        
+    def testEventDuplicateDelivery(self):
+        self.rooms = []
+        self.rooms.append(Room.objects.create(name = "G304", building = "Main Building", floor = 3, capacity = 100, equipment = ["Projector", "Whiteboard"], description = "Large classroom.", bookable = True))
+        self.slots = []
+        self.slots.append(Slot.objects.create(id = f"{self.rooms[0].id}-1", room = self.rooms[0],start = datetime.datetime.combine(datetime.date.today(), datetime.time(9, 30)), end = datetime.datetime.combine(datetime.date.today(), datetime.time(10, 20))))
+
+        print("\n\n\n")
+        print("Test Studio Task 9 (Duplicate Delivery):\n")
+        self.booking = self.myBookingService.create(Room.objects.get(name="G304"))
+        self.myEventBus.add("BookingCreated",self.myStaffService)
+        result = self.myEventBus.publish(self.booking.type,self.booking.getData())
+        self.assertEqual(result, True) #2. event is published
+        print("Event is published")
+        result = self.myEventBus.publish(self.booking.type,self.booking.getData()) #try to publish it second time
+        try:
+            book = Booking.objects.get(slot = Slot.objects.get(id = f"{Room.objects.get(name="G304").id}-1"))
+            print("Event is only published once, test passed")
+        except Book.DoesNotExist:
+            print("Somethings' wrong, booking was not found")
+        except Book.MultipleObjectsReturned:
+            print("Multiple bookings detected, test failed")
+            self.assertEqual(0,1)
