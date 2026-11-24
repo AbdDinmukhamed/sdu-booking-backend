@@ -30,6 +30,8 @@ class EventBookingCreated():
         self.bookingId = bookingId
         self.occuredAt = datetime.now()
         self.type = "BookingCreated"
+    def getData(self):
+        return [self.Id,self.bookingId,self.occuredAt]
         
 
 
@@ -51,14 +53,11 @@ class BookingService(Publisher):
      
 class StaffService(Consumer):
     def __init__(self):
-        self.bookingRepo = [] #for simplicity our Booking repo will be separate from real SQL db
+        self.proccessedEvents = []
     def handle_event(self,event_type,data = None):
-        self.bookingRepo.append([data])
-     
-if __name__ == "__main__":
-    myEventBus = EventBus()
-    myBookingService = BookingService()
-    myStaffService = StaffService()
-    
-    booking = myBookingService.create(Room.objects[0].id)
-    myEventBus.add("BookingCreated",myStaffService)
+        if data in self.proccessedEvents:
+            return
+        auditRepository = Booking(room = Slot.objects.get(id = f"{data}-1").room, slot = Slot.objects.get(id = f"{data}-1"), userLogin = "test", status = Booking.PENDING)
+        auditRepository.save()
+        self.proccessedEvents.append(data)
+        
